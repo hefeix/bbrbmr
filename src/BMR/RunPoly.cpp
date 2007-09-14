@@ -27,8 +27,8 @@
   2.00                  fixed log.prior with infinite prior var
   2.01    Jan 31, 06    fixed bug: Gaussian penalty should be 1/(2*var), not 1/var //PolyZO.cpp
   2.02    Oct 08, 06    fixed bug: -R not working without -z //PolyZO.cpp, poly.h
-  3.03    Jun 12, 06    nonzero mode features in ind prior file.
-  3.04    May 01, 07    set the initial value of beta to the mode;
+  4.03    Jun 12, 07    nonzero mode features in ind prior file.
+  4.04    May 01, 07    set the initial value of beta to the mode;
                         -R could take argument;
 			--modelname;
  */

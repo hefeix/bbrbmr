@@ -1,5 +1,5 @@
 #ifdef GROUPS
-# define VERSION "3.03"
+# define VERSION "4.03"
 #else
 # define VERSION "2.10"
 #endif
@@ -58,8 +58,8 @@
 // 2.62     Nov 10, 05  hyperparameter autosearch: observations weighted by inverse stddev
 // 3.00                 fixed log.prior with infinite prior var
 // 3.01     Jan 31, 06  fixed bug: Gaussian penalty should be 1/(2*var), not 1/var //ZO.cpp
-// SL 3.02  May 29, 07  total feats kept in DataFactory, used to reserve data vector in InvData class
-// SL 3.03  Mar, 07     non-zero mode features in ind prior file but not active in training examples.
+// SL 4.02  May 29, 07  total feats kept in DataFactory, used to reserve data vector in InvData class
+// SL 4.03  Mar, 07     non-zero mode features in ind prior file but not active in training examples.
 //                      more specifics in ModelFile.h
  
 #include <iostream>

@@ -9,7 +9,7 @@
  *                      Individual priors
  *                      fixed log.prior with infinite prior var
  * 3.01   Jan 31, 06    fixed bug: Gaussian penalty should be 1/(2*var), not 1/var
- * 3.02   May 30, 07    reserve space for inverted index at the beginning
+ * 4.02   May 30, 07    reserve space for inverted index at the beginning
  */
 #define  _USE_MATH_DEFINES
 #include <math.h>
@@ -601,7 +601,7 @@ void LRModel::tuneModel(   IRowSet & drs,
 
         drs.rewind();
         
-	// m_beta = ParamMatrixSquare( drs.dim(), drs.c(),  0.0);  // v3.04
+	// m_beta = ParamMatrixSquare( drs.dim(), drs.c(),  0.0);  // v4.04
 
 	if( ModelType::ZO==m_modelType.Optimizer() ) {
             InvData<InvTripletItr> invData( drs );
@@ -889,7 +889,7 @@ void LRModel::Train( const char* topic,
                 priorMode(j,k) *= stddevs[j];
     }
 
-    m_beta = priorMode;   // v3.04  
+    m_beta = priorMode;   // v4.04  
 
     //this sets m_beta and m_bayesParam
     tuneModel( *p_workingRs, //bayesParameter, 
@@ -961,7 +961,7 @@ void LRModel::Train( const char* topic,
     }
 
     m_bTrained = true;
-    modelFile.setRefClassInfo(modelType.ReferenceClass(), modelType.ReferenceClassId()); // v3.03 SL
+    modelFile.setRefClassInfo(modelType.ReferenceClass(), modelType.ReferenceClassId()); // v4.03 SL
     modelFile.WriteParams(strModelname, m_modelType, designParameter, m_pDesign, m_featSelect, m_beta, drs );
 
     // write results file

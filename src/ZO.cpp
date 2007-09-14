@@ -23,9 +23,9 @@
 // 2.62     Nov 10, 05  hyperparameter autosearch: observations weighted by inverse stddev
 //                      fixed log.prior with infinite prior var
 // 3.01     Jan 31, 06  fixed bug: Gaussian penalty should be 1/(2*var), not 1/var
-// SL 3.02  May 29, 07  reserve the data vector in InvData in the beginning, to avoid the double 
+// SL 4.02  May 29, 07  reserve the data vector in InvData in the beginning, to avoid the double 
 //                      memory allocation caused by capacity(). 
-// SL 3.03  Jun 12, 07  non-zero mode feature info, pass to writemodel with traindata reference.
+// SL 4.03  Jun 12, 07  non-zero mode feature info, pass to writemodel with traindata reference.
 
 #define  _USE_MATH_DEFINES
 #include <math.h>
@@ -162,7 +162,7 @@ public:
         rowset.rewind();
 
 	try{
-	    data.reserve(rowset.getTotalFeats()+rowset.n()+10);  // SL. ver3.02
+	    data.reserve(rowset.getTotalFeats()+rowset.n()+10);  // SL. ver4.02
 	}
 	catch(std::exception & e) {
 	    throw logic_error("Insufficient memory to build inverted index to training data.  Aborting execution.");
@@ -1722,9 +1722,9 @@ void ZOLRModel::Train( const char* topic,
     for( unsigned i=0; i<trainData.dim(); i++ )
         featSelect.push_back( trainData.colId(i) );
     if( m_bHier )
-	modelFile.WriteTopicHierSparse( m_topic, strModelname, m_modelType, designParameter, featSelect, m_hierW, m_threshold, drs ); // v3.03 drs
+	modelFile.WriteTopicHierSparse( m_topic, strModelname, m_modelType, designParameter, featSelect, m_hierW, m_threshold, drs ); // v4.03 drs
     else
-	modelFile.WriteTopic( m_topic, strModelname, m_modelType, designParameter, featSelect, m_beta, m_threshold, drs ); // v3.03 drs
+	modelFile.WriteTopic( m_topic, strModelname, m_modelType, designParameter, featSelect, m_beta, m_threshold, drs ); // v4.03 drs
 
     // report model
     if( m_bHier ){//TODO

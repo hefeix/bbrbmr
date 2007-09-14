@@ -1,7 +1,7 @@
 // 2.10     Jun 20, 05  bug with ind.priors file read - fixed
-// SL 3.02  May 29, 07  calc the total number of features (including repeated ones) in CollectWordRestrict
+// SL 4.02  May 29, 07  calc the total number of features (including repeated ones) in CollectWordRestrict
 //                      pass totalFeats to RowSetMem in NewTrainRowSet
-// SL 3.03  Jun 18, 07  nonzero mode features which are not active in training examples
+// SL 4.03  Jun 18, 07  nonzero mode features which are not active in training examples
 
 #include "dataBin.h"
 #include "DataFactory.h"
@@ -134,7 +134,7 @@ void DataFactory::CollectWordRestrict() {
     for( vector<SparseVector>::const_iterator mitr=Mtrain.begin(); mitr!=Mtrain.end(); mitr++ )
         for( SparseVector::const_iterator xitr=mitr->begin(); xitr!=mitr->end(); xitr++ ) {
             words.insert( xitr->first );
-	    totalFeats++;  // SL., ver 3.02; calculate the total number of features
+	    totalFeats++;  // SL., ver 4.02; calculate the total number of features
 	}
 
     for( set<int>::const_iterator sitr=words.begin(); sitr!=words.end(); sitr++ )
@@ -423,7 +423,7 @@ RowSetMem* PlainFileYDataFactory:: NewTrainRowSet( const char* topic,
 {
 
     // get the non-zero mode feature information
-    priorTerms.checkNonZeroModes(wordRestrict, nonzeromodefeats);  // v3.03
+    priorTerms.checkNonZeroModes(wordRestrict, nonzeromodefeats);  // v4.03
 
     SetTopic( topic, featSelectParameter, priorTerms );
     if( extScoreParam.isValid() )
@@ -432,9 +432,9 @@ RowSetMem* PlainFileYDataFactory:: NewTrainRowSet( const char* topic,
     PlainNameResolver* pNameResolver =  rowIdMode ? 
         new PlainNameResolver( featSelect, rowIds ) :
         new PlainNameResolver( featSelect );
-    RowSetMem* TrainRowSet = new RowSetMem( Mtrain, ngroups, groupsTrain, yTrain, nonzeromodefeats, // v3.03 
+    RowSetMem* TrainRowSet = new RowSetMem( Mtrain, ngroups, groupsTrain, yTrain, nonzeromodefeats, // v4.03 
 					    featSelect, pNameResolver, pES);
-    TrainRowSet->setTotalFeats(totalFeats); //ver3.02 SL  
+    TrainRowSet->setTotalFeats(totalFeats); //ver4.02 SL  
     return TrainRowSet;
 }
 #endif //!defined(TEST_ONLY)

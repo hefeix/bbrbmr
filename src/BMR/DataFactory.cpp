@@ -1,12 +1,12 @@
 /*
-SL 3.02  May 30, 07   calculate total number of features in collectWordRestrict; pass info to RowSetMem in newtrainrowset.
-SL 3.03  Jun 12, 07   non-zero mode feature not active in training examples, the final beta should equal to the mode.
+SL 4.02  May 30, 07   calculate total number of features in collectWordRestrict; pass info to RowSetMem in newtrainrowset.
+SL 4.03  Jun 12, 07   non-zero mode feature not active in training examples, the final beta should equal to the mode.
  */
 
 #include "DataFactory.h"
 #include "dataPoly.h"
 #include "ExtScore.h"
-#include "PriorTerms.h" // v3.03
+#include "PriorTerms.h" // v4.03
 
 DataFactory::DataFactory(   //test only ctor
         vector<int>& classes_,
@@ -128,7 +128,7 @@ void DataFactory::CollectWordRestrict() {
     for( vector<SparseVector>::const_iterator mitr=Mtrain.begin(); mitr!=Mtrain.end(); mitr++ )
         for( SparseVector::const_iterator xitr=mitr->begin(); xitr!=mitr->end(); xitr++ ) {
             words.insert( xitr->first );
-	    totalFeats++;  // SL, ver 3.02
+	    totalFeats++;  // SL, ver 4.02
 	}
 
     for( set<int>::const_iterator sitr=words.begin(); sitr!=words.end(); sitr++ )
@@ -204,7 +204,7 @@ void PlainFileYDataFactory::MakeSparseMatrix( string fName ) { //collect both X 
     set<unsigned> illegalLabels;
     //unsigned ignoredRows =0;
 
-    int nfeatures=0; // SL v3.02
+    int nfeatures=0; // SL v4.02
 
     while( p_ifs->good() )
     {
@@ -278,14 +278,14 @@ RowSetMem* PlainFileYDataFactory:: NewTrainRowSet( const char* topic,
     const IndPriors& priorTerms,
     const class ExtScoreParam& extScoreParam )
 {
-    priorTerms.checkNonZeroModes(wordRestrict, nonzeromodefeats);  // v3.03
+    priorTerms.checkNonZeroModes(wordRestrict, nonzeromodefeats);  // v4.03
     SetTopic( topic, featSelectParameter, priorTerms );   // priorTerms not used yet
     if( extScoreParam.isValid() )
         throw runtime_error("External scores not supported with plain data file!");
     ExtScores* pES  = new ExtScores( extScoreParam, topic, true/*train*/);
     PlainNameResolver* pNameResolver = new PlainNameResolver( featSelect, classes );
-    RowSetMem* TrainRowSet = new RowSetMem( Mtrain, yTrain, nonzeromodefeats, featSelect, pNameResolver, pES ); //v3.03 add nonzeroModes
-    TrainRowSet->setTotalFeats(totalFeats);  // SL ver3.02
+    RowSetMem* TrainRowSet = new RowSetMem( Mtrain, yTrain, nonzeromodefeats, featSelect, pNameResolver, pES ); //v4.03 add nonzeroModes
+    TrainRowSet->setTotalFeats(totalFeats);  // SL ver4.02
     return TrainRowSet;
 }
 
