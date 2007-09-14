@@ -1,0 +1,41 @@
+BBRBMR software:
+
+/src
+   	*.h *.cpp *.hpp files <-- for BBR software
+	BMR/                  <-- other files used for BMR software
+	tclap-1.0.5/          <-- third party code used for both BBR and BMR
+      tnt_3.0.4/            <-- third party code used for BBR
+	jama124src/           <-- third party code used for BBR  
+
+/gcc
+   contains the make file for BBRtrain BBRclassify BMRtrain BMRclassify
+	<-- the PATH for jama, tnt and tclap need to be changed in the /gcc/Makefile
+
+/msvc
+  contains compile and link files for Windows
+	<-- the PATH for jama, tnt and tclap need to be changed in the /msvc/*.rsp
+
+
+
+
+#***************************************************
+#     compile 
+#***************************************************
+
+To compile the software, run /gcc/Makefile if on Linux or Mac.
+run /msvc/rebuilt.bat if on Windows.
+
+
+
+#****************************************************
+#      run
+#****************************************************
+
+After compilation, the four executables will be generated under /gcc or /msvc.
+And they are: 
+   BBRtrain:     binary model; 
+   BBRclassify:  classify based on the binary model trained by BBRtrain;
+   BMRtrain:     multi-class model;
+   BMRclassify:  classify based on the multi-class model trained by BMRtrain.
+
+
