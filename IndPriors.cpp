@@ -3,6 +3,10 @@
 #include <string>
 #include <limits>
 using namespace std;
+#ifndef _MSC_VER
+# define  stricmp(a, b)   strcasecmp(a,b) 
+# include <strings.h>
+#endif
 
 #include "logging.h"
 #include "PriorTerms.h"

@@ -6,9 +6,6 @@
 #include <ostream>
 #include <sstream>
 #include <stdexcept>
-#ifndef _MSC_VER
-#define  stricmp(a, b)   strcasecmp(a,b) 
-#endif
 
 #ifdef USE_LEMUR
 # include "Index.hpp"

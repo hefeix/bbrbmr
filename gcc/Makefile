@@ -1,7 +1,7 @@
 # update with your own paths
-export TCLAPINCPATH=$(HOME)/source/tclap-1.0.5/include
-export TNTPATH=$(HOME)/source/TNT
-export JAMAPATH=$(HOME)/source/Jama
+export TCLAPINCPATH=../../tclap-1.0.5/include
+export TNTPATH=../../tnt_3_0_4
+export JAMAPATH=../../jama124src
 
 # export PROFILE=-pg
 export PROFILE=
@@ -16,9 +16,9 @@ BBR:
 
 BBRstatic:
 	cd classify && $(MAKE) STATIC=-static
-	mv classify/BBRclassify ../static
+	mv classify/BBRclassify ./static
 	cd train && $(MAKE) STATIC=-static
-	mv train/BBRtrain ../static
+	mv train/BBRtrain ./static
 
 clean: 
 	rm classify/*.o 

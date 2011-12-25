@@ -1,4 +1,5 @@
 // 2.62     Nov 10, 05  hyperparameter autosearch: observations weighted by inverse stddev
+// 3.02     Sep 01, 11  watch for denormal or infinite limits during autosearch
 
 #define  _USE_MATH_DEFINES
 #include <math.h>
@@ -79,16 +80,20 @@ pair<bool,double> UniModalSearch::step() //recommend: do/not next step, and the 
             ret.second = y_by_x.rbegin()->first * m_stdstep;
         break;
     default: // 3 or more
-        double maxval = best->second.m;
-        if( y_by_x.begin()->first==best->first ) //max is at the left - move to the left
-            ret.second = y_by_x.begin()->first / m_stdstep;
-        else if( y_by_x.rbegin()->first==best->first ) //max is at the right - move to the right
-            ret.second = y_by_x.rbegin()->first * m_stdstep;
-        else { //max is 'bracketed'
+		if( y_by_x.begin()->first==best->first ) {  //max is at the left - move to the left
+            ret.second = best->first / m_stdstep;
+			if( !(best->first > numeric_limits<double>::denorm_min()) ) //inf or nan
+				ret.first = false;
+		}else if( y_by_x.rbegin()->first==best->first ) { //max is at the right - move to the right
+            ret.second = best->first * m_stdstep;
+			if( !(best->first < numeric_limits<double>::infinity()) ) //inf or nan
+				ret.first = false;
+		}else { //max is 'bracketed'
             QuadrCoefs coefs = QuadrLogFit( y_by_x );
             double log_argmax = - coefs.c1 / coefs.c2 / 2;
             double expected_max = - coefs.c1*coefs.c1 / coefs.c2 / 4 + coefs.c0;
 
+			double maxval = best->second.m;
             if( 0==maxval )  ret.first=false;
             else if( (expected_max-maxval)/fabs(maxval) < m_stop_by_y )  ret.first=false;
             else if( fabs(log_argmax-log(best->first)) < m_stop_by_x )  ret.first=false;
@@ -134,24 +139,32 @@ void main() {
 }
 #endif //UNITTEST_
 
+
 /*
-    Copyright 2005, Rutgers University, New Brunswick, NJ.
+    Copyright (c) 2002, 2003, 2004, 2005, 2006, 2007, Rutgers University, New Brunswick, NJ, USA.
 
-    All Rights Reserved
+    Permission is hereby granted, free of charge, to any person obtaining
+    a copy of this software and associated documentation files (the
+    "Software"), to deal in the Software without restriction, including
+    without limitation the rights to use, copy, modify, merge, publish,
+    distribute, sublicense, and/or sell copies of the Software, and to
+    permit persons to whom the Software is furnished to do so, subject to
+    the following conditions:
 
-    Permission to use, copy, and modify this software and its documentation for any purpose 
-    other than its incorporation into a commercial product is hereby granted without fee, 
-    provided that the above copyright notice appears in all copies and that both that 
-    copyright notice and this permission notice appear in supporting documentation, and that 
-    the names of Rutgers University, DIMACS, and the authors not be used in advertising or 
-    publicity pertaining to distribution of the software without specific, written prior 
-    permission.
+    The above copyright notice and this permission notice shall be
+    included in all copies or substantial portions of the Software.
 
-    RUTGERS UNIVERSITY, DIMACS, AND THE AUTHORS DISCLAIM ALL WARRANTIES WITH REGARD TO 
-    THIS SOFTWARE, INCLUDING ALL IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR 
-    ANY PARTICULAR PURPOSE. IN NO EVENT SHALL RUTGERS UNIVERSITY, DIMACS, OR THE AUTHORS 
-    BE LIABLE FOR ANY SPECIAL, INDIRECT OR CONSEQUENTIAL DAMAGES OR ANY DAMAGES WHATSOEVER 
-    RESULTING FROM LOSS OF USE, DATA OR PROFITS, WHETHER IN AN ACTION OF CONTRACT, 
-    NEGLIGENCE OR OTHER TORTIOUS ACTION, ARISING OUT OF OR IN CONNECTION WITH THE USE OR 
-    PERFORMANCE OF THIS SOFTWARE.
+    THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND,
+    EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF
+    MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE AND
+    NONINFRINGEMENT. IN NO EVENT SHALL THE AUTHORS OR COPYRIGHT HOLDERS
+    BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER IN AN
+    ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN
+    CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
+    SOFTWARE.
+
+    Except as contained in this notice, the name(s) of the above
+    copyright holders, DIMACS, and the software authors shall not be used
+    in advertising or otherwise to promote the sale, use or other
+    dealings in this Software without prior written authorization.
 */

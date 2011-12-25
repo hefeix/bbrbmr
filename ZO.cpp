@@ -1098,7 +1098,7 @@ void ZOLRModel::tuneHierModel(   IRowSet & drs,
                     else y++;
                 }
             foldsAlreadyRun[ifold] = true;
-            Log(5)<<"\nCross-validation "<<nfolds<<"-fold; Run "<<irun+1<<" out of "<<nruns<<", fold "<<ifold;
+            Log(5)<<"\nCross-validation "<<nfolds<<"-fold; Run "<<irun+1<<" out of "<<nruns<<", fold "<<ifold+1;
 
             //run cv part for the given fold
             SamplingRowSet cvtrain( drs, rndind, ifold, ifold+1, false ); //int(randmax*ifold/nfolds), int(randmax*(ifold+1)/nfolds)
@@ -1265,7 +1265,7 @@ void ZOLRModel::tuneModel(   IRowSet & drs,
                     else y++;
                 }
             foldsAlreadyRun[ifold] = true;
-            Log(5)<<"\nCross-validation "<<nfolds<<"-fold; Run "<<irun+1<<" out of "<<nruns<<", fold "<<ifold;
+            Log(5)<<"\nCross-validation "<<nfolds<<"-fold; Run "<<irun+1<<" out of "<<nruns<<", fold "<<ifold+1;
 
             //run cv part for a given fold
             SamplingRowSet cvtrain( drs, rndind, ifold, ifold+1, false ); //int(randmax*ifold/nfolds), int(randmax*(ifold+1)/nfolds)
@@ -1370,7 +1370,7 @@ void ZOLRModel::tuneModel(   IRowSet & drs,
                         else y++;
                     }
                 foldsAlreadyRun[ifold] = true;
-                Log(5)<<"\nCross-validation "<<nfolds<<"-fold; Run "<<irun+1<<" out of "<<nruns<<", fold "<<ifold;
+                Log(5)<<"\nCross-validation "<<nfolds<<"-fold; Run "<<irun+1<<" out of "<<nruns<<", fold "<<ifold+1;
 
                 //run cv part for a given fold
                 SamplingRowSet cvtrain( drs, rndind, ifold, ifold+1, false ); //int(randmax*ifold/nfolds), int(randmax*(ifold+1)/nfolds)

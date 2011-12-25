@@ -1,5 +1,5 @@
 #ifdef GROUPS
-# define VERSION "3.01"
+# define VERSION "3.02"
 #else
 # define VERSION "2.10"
 #endif
@@ -58,6 +58,7 @@
 // 2.62     Nov 10, 05  hyperparameter autosearch: observations weighted by inverse stddev
 // 3.00                 fixed log.prior with infinite prior var
 // 3.01     Jan 31, 06  fixed bug: Gaussian penalty should be 1/(2*var), not 1/var //ZO.cpp
+// 3.02     Sep 01, 11  watch for denormal or infinite limits during autosearch //HParSearch.cpp
 
 #include <iostream>
 #include <fstream>
@@ -66,9 +67,6 @@
 #include <stdlib.h>
 #define  _USE_MATH_DEFINES
 #include <math.h>
-#ifndef _MSC_VER
-#define  stricmp(a, b)   strcasecmp(a,b) 
-#endif
 
 using namespace std;
 

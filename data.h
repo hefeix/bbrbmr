@@ -9,17 +9,18 @@
 #include <algorithm>
 #include <limits>
 #include <stdexcept>
+#include <string.h>
 
-//#include "Oracle.hpp" Filter
+#ifndef _MSC_VER
+# define  stricmp(a, b)   strcasecmp(a,b) 
+# include <strings.h>
+#endif
+
 #include "Matrix.h"
 #include "logging.h"
 #include "TFIDFParamManager.h"
 
 using namespace std;
-
-#ifndef _MSC_VER
- #define  stricmp(a, b)   strcasecmp(a,b) 
-#endif
 
 inline bool readFromStdin( const char* fname ) {
     return 0==stricmp( "-", fname ) || 0==stricmp( "=", fname );    }

@@ -1,4 +1,4 @@
-/O2 /Ob1 /Oy /I ".." /I "c:\cygwin\source\tclap-1.0.5\include" /D "GROUPS" /D "TEST_ONLY" /D "WIN32" /D "NDEBUG" /D "_CONSOLE" /D "_MBCS" /GF /FD /EHsc /ML /GS /Gy /Zc:forScope /Fo"./" /Fd"./vc70.pdb" /W3 /c /Zi /TP
+/O2 /Ob1 /Oy /I ".." /I "..\tclap-1.0.5\include" /D "GROUPS" /D "TEST_ONLY" /D "WIN32" /D "NDEBUG" /D "_CONSOLE" /D "_MBCS" /GF /FD /EHsc /ML /GS /Gy /Zc:forScope /Fo"./" /Fd"./vc70.pdb" /W3 /c /Zi /TP
 ..\TestModel.cpp
 ..\RunBatch.cpp
 ..\Matrix.cpp
