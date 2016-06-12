@@ -5,14 +5,14 @@ COMPILE = $(CC) -O3 -c -Wno-deprecated -DTRAIN_ONLY -DGROUPS -I$(TCLAPINCPATH) -
 CPPOBJ = DataFactory.o Matrix.o Oracle.o RunBatch.o StrataSplit.o TestModel.o FeatSelect.o ZO.o IndPriors.o HParSearch.o
 
 # tclap is now all headers %.o : $(TCLAPSRCPATH)/%.cpp
-#	$(COMPILE) $< 
+#	$(COMPILE) $<
 
-%.o : ../../%.cpp 
-	$(COMPILE) $< 
+%.o : ../../src/%.cpp
+	$(COMPILE) $<
 
 BBRtrain: $(CPPOBJ)
 	$(CC) -O3 $(STATIC) -o $@ $(CPPOBJ) $() -lm
 
-clean: 
-	rm *.o 
+clean:
+	rm *.o
 	rm BBRtrain

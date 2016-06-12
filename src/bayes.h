@@ -3,6 +3,7 @@
 
 #include "Matrix.h"
 #include "data.h"
+#include "dataBin.h"
 #include "BayesParamManager.h"
 #include "ModelTypeParam.h"
 
@@ -12,7 +13,7 @@ double tuneThreshold( const vector<double>& score, const BoolVector& y, const cl
 
 double tuneThresholdEst( vector<pair<double,double> >& score_and_p_hat, const class ModelType& modelType );  // VM
 
-void  displayEvaluation( ostream& o, const BoolVector& y, const BoolVector& prediction, 
+void  displayEvaluation( ostream& o, const BoolVector& y, const BoolVector& prediction,
                         const string& comment =string() );
 void  displayEvaluationCT( ostream& o, int TP, int FP, int FN, int TN );
 double calcROC( std::vector< std::pair<double,bool> >& forROC );
@@ -41,7 +42,7 @@ class ZOLRModel {
 public:
     void Train( const char* topic,
         RowSetMem & trainData,
-		IRowSet*  trainPopData,  // VM
+                IRowSet*  trainPopData,  // VM
         //const class BayesParameter& bayesParameter,
         const class HyperParamPlan& hyperParamPlan,
         const class HyperParamPlan& hyperParamPlan2,
@@ -52,8 +53,8 @@ public:
         class WriteModel& modelFile,
         class ResultsFile& resFile ); //std::ostream& result, ResultFormat resultFormat );
     void Restore( class ReadModel& modelFile, const INameResolver& names );
-    void Test( IRowSet & TestRowSet, 
-        class ResultsFile& resFile,  //std::ostream& result, ResultFormat resultFormat, 
+    void Test( IRowSet & TestRowSet,
+        class ResultsFile& resFile,  //std::ostream& result, ResultFormat resultFormat,
         double probTestThreshold=-1 );
     ZOLRModel();
     ~ZOLRModel();
@@ -76,7 +77,7 @@ private:
                     const Vector& priorMean, const Vector& priorScale, const Vector& priorSkew );
     void testModel (
                     IRowSet & drs,
-                    ResultsFile& resFile, 
+                    ResultsFile& resFile,
                     double scoreThreshold ) const;
 };
 

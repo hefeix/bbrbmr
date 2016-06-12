@@ -3,6 +3,8 @@
  * modified by Alex Genkin
  */
 
+#include <string.h>
+
 #include <stdio.h>
 #include <assert.h>
 
@@ -52,15 +54,15 @@ void Oracle::Init( char const * inputFile, IDocIndex& docIdExtractor )
     // skip empty lines
     if (strspn(buf, " ") == strlen(buf)) continue;
     nonEmptyLineCnt++;
-    
+
     int judg;
     int n = sscanf( buf, "%s %s %d", qs, ds, &judg);
     //Log(12)<<endl<<nonEmptyLineCnt<<" "<<qs<<" "<<ds<<" "<<judg;
 
     if (n != 3) {
       char msgbuf[255 + bufsize ];
-      sprintf(msgbuf, "Cannot parse line %d in qrel file `%s': [%s]", 
-	      lineCnt, file, buf);
+      sprintf(msgbuf, "Cannot parse line %d in qrel file `%s': [%s]",
+              lineCnt, file, buf);
       throw runtime_error(string("Oracle ")+msgbuf);
     }
 
@@ -74,7 +76,7 @@ void Oracle::Init( char const * inputFile, IDocIndex& docIdExtractor )
       continue;
     }
 
-    // validate judgment 
+    // validate judgment
     switch(judg) {
     case NONREL:
     case REL:
@@ -105,7 +107,7 @@ void Oracle::Init( char const * inputFile, IDocIndex& docIdExtractor )
 OracleLabel Oracle::ask(const char * q_id, int doc_id) {
   QDJMap::iterator p = dataMap.find( q_id);
   if (p == dataMap.end()) return UNJUDGED;
-  DJMap &m = p->second;  
+  DJMap &m = p->second;
   DJMap::iterator it = m.find( doc_id);
   if (it == m.end()) return UNJUDGED;
   int ju = it->second;
@@ -137,16 +139,16 @@ int Oracle::docCnt(DJMap & m,OracleLabel label ) {
 // NON) for the specified query.
 // This method can only be used with a training set, of course
 vector<int> Oracle::docList( const char * q_id, OracleLabel label) {
-  if (!isTraining) 
+  if (!isTraining)
       throw logic_error(string("Oracle::relList: Prohibited to look ahead unless this is TRAIN!"));
   QDJMap::iterator p = dataMap.find( q_id);
   if (p== dataMap.end()) {
     cout <<"Warning in Oracle::docList("<<label<<"): No data found for query "
-	 << q_id	 <<endl;
+         << q_id         <<endl;
     vector<int> x(0);
     return x;
   }
-  DJMap &m = p->second;  
+  DJMap &m = p->second;
   int cnt= docCnt(m, label);
   int k=0;
   vector<int> x(cnt);
@@ -157,7 +159,7 @@ vector<int> Oracle::docList( const char * q_id, OracleLabel label) {
     }
   }
   assert(k==cnt);
-  return x;  
+  return x;
 }
 
 
@@ -170,11 +172,11 @@ vector<int> Oracle::docList( const char * q_id) {
   QDJMap::iterator p = dataMap.find( q_id);
   if (p== dataMap.end()) {
     cout << "Warning in Oracle::docList: no judgments found for query "<< q_id
-	 <<endl;
+         <<endl;
     vector<int> x(0);
     return x;
   }
-  DJMap &m = p->second;  
+  DJMap &m = p->second;
   int cnt= m.size();
   int k=0;
   vector<int> x(cnt);
@@ -183,7 +185,7 @@ vector<int> Oracle::docList( const char * q_id) {
     x[k++] = di;
   }
   assert(k==cnt);
-  return x;  
+  return x;
 }
 
 
@@ -201,7 +203,7 @@ int Oracle::totalSize() {
     sum += m.size();
   }
   return sum;
-  
+
 }
 
 

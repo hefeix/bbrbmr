@@ -4,6 +4,8 @@
 #ifndef _BAYES_PARAMETER_HPP
 #define _BAYES_PARAMETER_HPP
 
+#include <string.h>
+
 #include <ostream>
 #include <string>
 #include <sstream>
@@ -29,7 +31,7 @@ class BayesParameter {
 public:
     //access members
     enum PriorType PriorType() const { return m_prior; }
-    double priorVar() const { 
+    double priorVar() const {
         return hyperpar2var( m_prior, m_skew, m_hyperpar ); }
     double gamma() const {
         if( m_prior!=Laplace ) throw logic_error("Irrelevant Laplace parameter requested");
@@ -75,7 +77,7 @@ private:
 
     friend class HyperParamPlan;
     BayesParameter(enum PriorType priorType, double skew_ ) // auto hpar
-        : m_prior(priorType), m_validPar(false)/*autoHpar(true)*/, m_skew( skew_>0? 1 : skew_<0? -1 : 0 ) 
+        : m_prior(priorType), m_validPar(false)/*autoHpar(true)*/, m_skew( skew_>0? 1 : skew_<0? -1 : 0 )
     { is_consistent(); }
 };
 
@@ -104,7 +106,7 @@ class HyperParamPlan {
     bool m_search; //search for hyperpar with cv without a grid
     void sortPlan() {   //sort hpar plan by penalty decreasing
         if( ! hasGrid() )   return;
-        if(Laplace==PriorType()) 
+        if(Laplace==PriorType())
             sort( m_plan.rbegin(), m_plan.rend() );
         else
             sort( m_plan.begin(), m_plan.end() );
@@ -113,9 +115,9 @@ public:
     enum PriorType PriorType() const { return m_bp.PriorType(); }
     double skew() const { return m_bp.skew(); }
     enum HyperParMode { Native, AsVar };
-    const BayesParameter& bp() const { 
-	Log(3)<<endl<<"DEBUG (HyperParamPlan::bp())"<<m_bp<<endl;  // for test
-	return m_bp; 
+    const BayesParameter& bp() const {
+        Log(3)<<endl<<"DEBUG (HyperParamPlan::bp())"<<m_bp<<endl;  // for test
+        return m_bp;
     }
 
     unsigned plansize() const { return m_plan.size(); }
@@ -134,17 +136,17 @@ public:
 
     bool ErrBarRule() const { return hasGrid() && errBarRule; }
 
-    BayesParameter InstBayesParam(unsigned iplan) const { 
+    BayesParameter InstBayesParam(unsigned iplan) const {
         return BayesParameter( m_bp.m_prior, m_plan.at(iplan), m_bp.skew() ); }
-    BayesParameter InstByVar(double var) const { 
-        return BayesParameter( m_bp.m_prior, 
-            var2hyperpar( m_bp.m_prior, m_bp.skew(), var ), 
-            m_bp.skew() ); 
+    BayesParameter InstByVar(double var) const {
+        return BayesParameter( m_bp.m_prior,
+            var2hyperpar( m_bp.m_prior, m_bp.skew(), var ),
+            m_bp.skew() );
     }
 
     //ctor's
     HyperParamPlan() {} //default - disabled, since prior type is undef
-    HyperParamPlan( enum PriorType priorType, double skew, std::string strHP, std::string strCV, 
+    HyperParamPlan( enum PriorType priorType, double skew, std::string strHP, std::string strCV,
         HyperParMode hyperParMode = Native,
         bool errBarRule_=false)
         : errBarRule(errBarRule_), m_search(false)
@@ -152,23 +154,23 @@ public:
         m_nruns = m_nfolds = 0;
         char comma;
         {
-	    /* commented by Shenzhi for task 4
+            /* commented by Shenzhi for task 4
             std::istringstream istr(strHP);
             double d;
             while( istr>>d ) {
                 m_plan.push_back( Native==hyperParMode ? d : var2hyperpar(priorType,skew,d) );
                 istr>>comma;
             }
-	    */
+            */
             char* var = strtok((char*)strHP.c_str(),", ");
             while( var ) {
-		double d;
+                double d;
                 if(var=="inf")
-		    d = std::numeric_limits<double>::infinity();
-                else 
+                    d = std::numeric_limits<double>::infinity();
+                else
                     d = atof(var);
-		m_plan.push_back( Native==hyperParMode ? d : var2hyperpar (priorType,\
-									       skew,d));
+                m_plan.push_back( Native==hyperParMode ? d : var2hyperpar (priorType,\
+                                                                               skew,d));
                 var = strtok(NULL,", ");
             }
         }

@@ -5,6 +5,8 @@
 #ifndef Data_And_Labels_
 #define Data_And_Labels_
 
+#include <string.h>
+
 #include <string>
 #include <vector>
 #include <sstream>
@@ -21,7 +23,7 @@
 using namespace std;
 
 #ifndef _MSC_VER
- #define  stricmp(a, b)   strcasecmp(a,b) 
+ #define  stricmp(a, b)   strcasecmp(a,b)
 #endif
 
 // [added by shenzhi for task 2]
@@ -33,7 +35,7 @@ inline bool readFromStdin( const char* fname ) {
     return 0==stricmp( "-", fname ) || 0==stricmp( "=", fname );    }
 
 inline string int2string(int i) {
-    std::ostringstream buf; 
+    std::ostringstream buf;
     buf<<i;
     return buf.str();
 }
@@ -41,17 +43,17 @@ inline string int2string(int i) {
 // [added by Shenzhi for task 2]
 inline bool almostEqual(double A, double B) {
     if(fabs(A-B)<maxAbsoluteError)
-	return true;
+        return true;
     return false;
 }
 
 inline bool almostEqualUsingInt(double A, double B) {
     assert(sizeof(double) == sizeof(int));
     if(A==B)
-	return true;
+        return true;
     int intDiff = abs(*(int*)&A - *(int*)&B);
     if(intDiff <= maxIntAbsoluteError)
-	return true;
+        return true;
     return false;
 }
 // [end of adding]
@@ -71,13 +73,13 @@ class SparseVector : private vector< SparseItem > {
     void insert( int i, double d ) {
         push_back( SparseItem( i, d ) ); }
 public:
-	typedef vector< SparseItem >::const_iterator const_iterator;
-	typedef vector< SparseItem >::iterator iterator;
+        typedef vector< SparseItem >::const_iterator const_iterator;
+        typedef vector< SparseItem >::iterator iterator;
     const_iterator begin() const { return vector<SparseItem>::begin(); }
     const_iterator end() const { return vector<SparseItem>::end(); }
     iterator begin() { return vector<SparseItem>::begin(); }
     iterator end() { return vector<SparseItem>::end(); }
-    const_iterator find( int i ) const { 
+    const_iterator find( int i ) const {
         SparseItem pattern( i, - numeric_limits<double>::max() );
         vector< SparseItem >::const_iterator found = lower_bound( begin(), end(), pattern );
         if( found != end() && found->first==i )
@@ -173,12 +175,12 @@ class DenseData : public IDenseData {
     void addRow( valarray<double> x, bool y );
 public:
     //ctor's
-    //DenseData( const Matrix& x, const BoolVector& y) : m_x(x), m_y(y) {}; 
+    //DenseData( const Matrix& x, const BoolVector& y) : m_x(x), m_y(y) {};
     //from plain file; assumes labels in the last column
-    //DenseData( const char* file); 
+    //DenseData( const char* file);
     //from text data
     //DenseData( const vector< pair<SparseVector,bool> >&, const std::hash_map<int,int>& );
-    DenseData( const vector<SparseVector>& x, const vector<YType> y, 
+    DenseData( const vector<SparseVector>& x, const vector<YType> y,
         const vector<int>& terms, const vector<int>& docs, Index* index );
     ~DenseData() { delete pNames; }
 
@@ -221,17 +223,17 @@ public:
     virtual ~IRowSet() {};
     virtual string currRowName() const=0;
     virtual unsigned n() const { throw logic_error("Unsupported feature: Size of rowset"); return unsigned(-1); }
-    virtual size_t getTotalFeats() const {throw logic_error("Unsupported feature: Size of rowset"); return unsigned(-1);} // SL ver 3.02  
-    // virtual const vector<tri>& getNonzeroModes() const { 
+    virtual size_t getTotalFeats() const {throw logic_error("Unsupported feature: Size of rowset"); return unsigned(-1);} // SL ver 3.02
+    // virtual const vector<tri>& getNonzeroModes() const {
     virtual const IndPriorNonZeroModeFeats& getNonzeroModes() const {
-	throw logic_error("Unsupported feature: get non zero modes from ind prior file"); 
-	IndPriorNonZeroModeFeats * nonzero = new IndPriorNonZeroModeFeats();
-	return *nonzero; 
-    } // SL v3.03 
-    virtual const vector<int>& Feats() const { 
-	throw logic_error("Unsupported feature: get word restrict vector"); 
-	vector<int> * temp = new vector<int>();
-	return *temp; 
+        throw logic_error("Unsupported feature: get non zero modes from ind prior file");
+        IndPriorNonZeroModeFeats * nonzero = new IndPriorNonZeroModeFeats();
+        return *nonzero;
+    } // SL v3.03
+    virtual const vector<int>& Feats() const {
+        throw logic_error("Unsupported feature: get word restrict vector");
+        vector<int> * temp = new vector<int>();
+        return *temp;
     } // SL v3.03
 };
 
@@ -267,7 +269,7 @@ public:
 #ifdef POLYTOMOUS
       classes(classes_),
 #else
-      topic(topic_), 
+      topic(topic_),
 #endif //POLYTOMOUS
       m_ngroups(ngroups_),
       featSelect(featSelect_),
@@ -285,7 +287,7 @@ public:
 #ifdef POLYTOMOUS
     bool ygood() const  { return 0<=m_y && m_y<classes.size(); };
     unsigned c() const { return classes.size(); }
-    virtual int classId( unsigned c ) const { 
+    virtual int classId( unsigned c ) const {
         if(c<classes.size()) return classes[c];
         else throw logic_error(string("Illegal class number: ")+int2string(c));
     }
@@ -312,8 +314,8 @@ protected:
         {
             //find in WordRestrict first
             vector<int>::const_iterator iWR = lower_bound(
-                wordRestrict.begin(), 
-                wordRestrict.end(), 
+                wordRestrict.begin(),
+                wordRestrict.end(),
                 ix->first );
             if( iWR!=wordRestrict.end() && *iWR==ix->first )
             {
@@ -322,8 +324,8 @@ protected:
                 norm += tfidf * tfidf;
 
                 vector<int>::const_iterator iFS = lower_bound(
-                    featSelect.begin(), 
-                    featSelect.end(), 
+                    featSelect.begin(),
+                    featSelect.end(),
                     ix->first );
                 if( iFS!=featSelect.end() && *iFS==ix->first ) {
                     unsigned iTermFS = iFS - featSelect.begin();
@@ -407,10 +409,10 @@ public:
         : source(source_), means(means_), stddevs(stddevs_)
     { }
     size_t getTotalFeats() const { return source.getTotalFeats(); }  // SL ver3.02
-    bool next() {  
+    bool next() {
         if( source.next() ) {
             m_x.clear();
-            for( unsigned i=0; i<source.dim(); i++ ) 
+            for( unsigned i=0; i<source.dim(); i++ )
             {
                 double val, newval;
                 //?? that does not work for some reason... int colid = source.colId( i );

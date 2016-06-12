@@ -26,9 +26,9 @@ using namespace std;
 /// Possible judgments to be returned by an Oracle
 enum OracleLabel  {
   // Marked as "non-relevant" in the QREL file
-  NONREL=0, 
+  NONREL=0,
   // Marked as "relevant" in the QREL file
-  REL=1, 
+  REL=1,
   // Not present in Qrel file (or marked as "unjudged"), but we looked
   UNJUDGED=-1,
   // We never asked the Oracle
@@ -98,27 +98,27 @@ private:
   QDJMap dataMap;
 
   /// Sums up the total number of entries for all queries stored in this Oracle
-  int Oracle::totalSize();   
+  int totalSize();
   int docCnt(DJMap & m,OracleLabel label );
 
 };
 
 /*--- wrap Oracle when there is no Lemur Index ---*/
-class IDocIndex{ public: 
+class IDocIndex{ public:
 virtual int lookup( const char* docname ) const =0;
 //virtual const char* lookup( int docnum ) const =0;
 };
 #ifdef USE_LEMUR
 class LemurDocIndex : public IDocIndex {
     Index &dbIndex;
-public: 
+public:
     LemurDocIndex(Index &dbIndex_) : dbIndex(dbIndex_) {};
     int lookup( const char* docname ) const { return dbIndex.document(docname); }
 };
 #endif //USE_LEMUR
 class PlainDocIndex : public IDocIndex {
     const map<string,int>& docIdByName;
-public: 
+public:
     PlainDocIndex( const map<string,int>& docIdByName_ ) : docIdByName(docIdByName_) {};
     int lookup( const char* docname ) const {
         map<string,int>::const_iterator itr = docIdByName.find(docname);
@@ -128,7 +128,7 @@ public:
 class InstantDocIndex : public IDocIndex {
     mutable map<string,int> docIdByName;
     bool locked;
-public: 
+public:
     InstantDocIndex() {
         locked = false; };
     int lookup( const char* docname_c ) const {
@@ -157,7 +157,7 @@ public:
     {
         pqrel = new Oracle( qrelFile, docIndex, isTraining );
         docIndex.lock();    };
-    ~PlainOracle() { delete pqrel; } 
+    ~PlainOracle() { delete pqrel; }
     OracleLabel ask(const char * topic, const char * docName) {
         int ind = docIndex.lookup(docName);
         if( ind<0 )  return UNJUDGED;
@@ -169,16 +169,16 @@ class TwoWayDocIndex : public IDocIndex {
     mutable map<string,int> docIdByName;
     mutable map<int,string> docNameById;
     bool locked;
-public: 
+public:
     TwoWayDocIndex() {
         locked = false; };
     TwoWayDocIndex( map<string,int>& docIdByName_ ) : docIdByName(docIdByName_) {
         locked = false; };
     void add( string docname, int docid ) {
         if( locked ) throw logic_error("InstantDocIndex is locked");
-        else{ 
-            docIdByName[docname] = docid;   
-            docNameById[docid] = docname;   
+        else{
+            docIdByName[docname] = docid;
+            docNameById[docid] = docname;
         }
     }
     void clear() { docIdByName.clear(); }
@@ -196,7 +196,7 @@ public:
         else
             return itr->second;
     }
-    const char* lookup( int id ) const { 
+    const char* lookup( int id ) const {
         map<int,string>::const_iterator itr = docNameById.find(id);
         if( itr==docNameById.end() ) throw runtime_error(string("InstantDocIndex: id not found: "));
         else return itr->second.c_str();
@@ -205,4 +205,3 @@ public:
 };
 
 #endif
-

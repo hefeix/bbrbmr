@@ -1,7 +1,12 @@
 # update with your own paths
-export TCLAPINCPATH=$(HOME)/BBR/src/tclap-1.0.5/include
-export TNTPATH=$(HOME)/BBR/src/tnt_3_0_4
-export JAMAPATH=$(HOME)/BBR/src/jama124src
+
+# export TCLAPINCPATH=$(HOME)/BBR/src/tclap-1.0.5/include
+# export TNTPATH=$(HOME)/BBR/src/tnt_3_0_4
+# export JAMAPATH=$(HOME)/BBR/src/jama124src
+
+export TCLAPINCPATH=/tmp/bbrbmr/src/tclap-1.0.5/include
+export TNTPATH=/tmp/bbrbmr/src/tnt_3_0_4
+export JAMAPATH=/tmp/bbrbmr/src/jama124src
 
 # export PROFILE=-pg
 export PROFILE=
@@ -28,8 +33,8 @@ allstatic:
 	cd bmrtrain && $(MAKE) STATIC=-static
 	mv bmrtrain/BMRtrain ./static
 
-clean: 
-	rm bbrclassify/*.o 
+clean:
+	rm bbrclassify/*.o
 	rm bbrtrain/*.o
 	rm bmrclassify/*.o
 	rm bmrtrain/*.o
@@ -37,4 +42,4 @@ clean:
 	rm BBRtrain
 	rm BMRclassify
 	rm BMRtrain
-	rm ./static/*	
+	rm ./static/*

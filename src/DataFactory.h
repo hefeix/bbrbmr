@@ -1,6 +1,6 @@
-// SL 3.02  May 29, 07    Define totalFeats in DataFactory class; Init to 0 in constructor; 
+// SL 3.02  May 29, 07    Define totalFeats in DataFactory class; Init to 0 in constructor;
 //                        could be obtained through getTotalFeats
-// SL 3.03  Jun 4, 07     for features not active in training examples, but has non zero mode in ind prior file, no optimization needed. 
+// SL 3.03  Jun 4, 07     for features not active in training examples, but has non zero mode in ind prior file, no optimization needed.
 //                        but in final model file, the beta value shoulbe be equal to the mode.
 
 #ifndef DATA_FACTORY_
@@ -18,7 +18,7 @@
 using namespace std;
 
 #ifdef USE_LEMUR
-# include "IndexManager.hpp" 
+# include "IndexManager.hpp"
 # include "Oracle.hpp"
 #endif //USE_LEMUR
 #include "TFIDFParamManager.h"
@@ -26,6 +26,7 @@ using namespace std;
 #include "PriorTerms.h"
 
 class FeatSelectParameter;
+class RowSetMem;
 
 class DataFactory {
 public:
@@ -43,7 +44,7 @@ public:
     //virtual DenseData* NewTestData( const char* topic ) =0;
     virtual IRowSet* NewTestRowSet( const char* topic, const class ExtScoreParam& extScoreParam ) =0;
     virtual IRowSet* NewTestRowSet( const char* topic, const vector<int>& featSelect_, //test only
-				    const class ExtScoreParam& extScoreParam ) =0;
+                                    const class ExtScoreParam& extScoreParam ) =0;
     //access - primarily to store model file
 #ifdef GROUPS
     unsigned NGroups() const { return ngroups; }
@@ -59,7 +60,7 @@ public:
     //dtor
     virtual ~DataFactory() {}
 
-    size_t getTotalFeats() const { return totalFeats; }  // SL, ver 3.02 
+    size_t getTotalFeats() const { return totalFeats; }  // SL, ver 3.02
 
 protected:
     // to keep the features in ind prior file, which are not active in training examples, but have non-zero modes;
@@ -100,10 +101,10 @@ protected:
 #ifdef POLYTOMOUS
         vector<int>& classes_,
 #endif
-        TFMethod tfMethod_, IDFMethod idfMethod_, bool cosineNormalize_, 
+        TFMethod tfMethod_, IDFMethod idfMethod_, bool cosineNormalize_,
         vector<int>& wordRestrict_, vector<double>& idf_
 #ifdef GROUPS
-        , unsigned ngroups_=0 
+        , unsigned ngroups_=0
 #endif
         );
     //--methods--//
@@ -113,7 +114,7 @@ protected:
 #endif
     void ApplyIDFtoTrain();
     void ComputeIDF();
-    void SetTopic( const char* topic, 
+    void SetTopic( const char* topic,
         const FeatSelectParameter& featSelectParameter,
         const IndPriors& priorTerms
         );
@@ -132,33 +133,33 @@ protected:
 public:
     PlainNameResolver( const vector<int>& terms_,
 #ifdef POLYTOMOUS
-        const vector<int>& classes_, 
+        const vector<int>& classes_,
 #endif
         const vector<string>& docNames_ )
-        : terms(terms_), 
+        : terms(terms_),
 #ifdef POLYTOMOUS
-        classes(classes_), 
+        classes(classes_),
 #endif
-        docNames(docNames_) 
+        docNames(docNames_)
     {docsActive=true;}
     PlainNameResolver( const vector<int>& terms_
 #ifdef POLYTOMOUS
         ,const vector<int>& classes_
 #endif
         )
-        : terms(terms_), 
+        : terms(terms_),
 #ifdef POLYTOMOUS
-        classes(classes_), 
+        classes(classes_),
 #endif
-        docNames(vector<string>()) 
+        docNames(vector<string>())
     {docsActive=false;} //no docs
     //INameResolver
     unsigned dim() const { return terms.size(); }
-    virtual string rowName( unsigned r ) const { 
+    virtual string rowName( unsigned r ) const {
         if( docsActive ) {//active doc names
             if( r>docNames.size() )
                 throw runtime_error(string("Name unknown for row number ")+int2string(r));
-            return docNames[r]; 
+            return docNames[r];
         }
         else
             return int2string( r );
@@ -190,19 +191,19 @@ class PlainFileYDataFactory : public DataFactory{
     bool rowIdMode;
     vector<string> rowIds;
 public:
-    PlainFileYDataFactory( 
+    PlainFileYDataFactory(
         const char* trainFile_,
-        const char* testFile_, 
+        const char* testFile_,
 #ifndef POLYTOMOUS
         bool rowIdMode_,
 #endif
         TFMethod tfMethod_, IDFMethod idfMethod_, bool cosineNormalize_
 #ifdef GROUPS
-        , unsigned ngroups 
+        , unsigned ngroups
 #endif
         );
     PlainFileYDataFactory( //test only
-        const char* testFile_, 
+        const char* testFile_,
 #ifdef POLYTOMOUS
         vector<int> classes_,
 #else
@@ -215,10 +216,10 @@ public:
         , unsigned ngroups
 #endif
         );
-    DenseData* NewTrainData( const char* topic, 
+    DenseData* NewTrainData( const char* topic,
         const FeatSelectParameter& featSelectParameter,
         const IndPriors& priorTerms );
-    RowSetMem* NewTrainRowSet( const char* topic, 
+    RowSetMem* NewTrainRowSet( const char* topic,
         const FeatSelectParameter& featSelectParameter,
         const IndPriors& priorTerms,
         const class ExtScoreParam& extScoreParam );
@@ -238,7 +239,7 @@ class PlainFileDataFactory : public DataFactory{
     PlainOracle *testQrel;
     vector<string> trainDocNames;
 public:
-    PlainFileDataFactory( 
+    PlainFileDataFactory(
         const char* trainFile_,
         const char* testFile_,
         const char* trainQrelFile,
@@ -254,10 +255,10 @@ public:
         delete trainQrel;
         delete testQrel;
     }
-    DenseData* NewTrainData( const char* topic, 
+    DenseData* NewTrainData( const char* topic,
         const FeatSelectParameter& featSelectParameter,
         const IndPriors& priorTerms );
-    RowSetMem* NewTrainRowSet( const char* topic, 
+    RowSetMem* NewTrainRowSet( const char* topic,
         const FeatSelectParameter& featSelectParameter,
         const IndPriors& priorTerms,
         const class ExtScoreParam& extScoreParam );

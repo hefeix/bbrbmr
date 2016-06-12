@@ -3,6 +3,8 @@
 #ifndef BAYES_PRIOR_TERMS_
 #define BAYES_PRIOR_TERMS_
 
+#include <string.h>
+
 #include <map>
 #include <string>
 #include <ostream>
@@ -11,7 +13,7 @@
 #include <algorithm>
 #include <vector>
 #ifndef _MSC_VER
-#define  stricmp(a, b)   strcasecmp(a,b) 
+#define  stricmp(a, b)   strcasecmp(a,b)
 #endif
 
 #ifdef USE_LEMUR
@@ -33,9 +35,9 @@ typedef map< unsigned, TModeVarSkew > TIndPriorsMap;
 
 
 struct tri{
-    int feat; 
-    double val; 
-    int cls; 
+    int feat;
+    double val;
+    int cls;
 
     tri( int feat_, double val_, int cls_) : feat(feat_), val(val_), cls(cls_) {};
     tri() : feat(-1),val(0),cls(0) {};
@@ -46,7 +48,7 @@ struct IndPriorNonZeroModeFeats {
     vector<tri> nonzeros;
     unsigned count;
     IndPriorNonZeroModeFeats() {
-	count=0;
+        count=0;
     }
 };
 
@@ -77,45 +79,45 @@ class IndPriors {    //individual priors
 
     //SL v3.03
     void _getNonZeroModes(vector<int>& words, IndPriorNonZeroModeFeats& nonzeromodes ) const {
-	vector<int>::iterator viter;
+        vector<int>::iterator viter;
 
-	map<int,TIndPriorsMap>::const_iterator iter;
-	nonzeromodes.count = 0;
-	for(iter=m_byClass.begin();iter!=m_byClass.end();iter++){
-	    viter=words.begin();
+        map<int,TIndPriorsMap>::const_iterator iter;
+        nonzeromodes.count = 0;
+        for(iter=m_byClass.begin();iter!=m_byClass.end();iter++){
+            viter=words.begin();
             TIndPriorsMap::const_iterator itr2;
-	    for(itr2 = iter->second.begin(); itr2!=iter->second.end(); itr2++) {
-		if(itr2->second.mode!=0.0) {
-		    vector<int>::iterator viter2 = find(viter,words.end(),itr2->first);
-		    if(viter2!=words.end())
-			viter=viter2;
-		    else {
-			//if(iter->first==-1){	
-			    nonzeromodes.nonzeros.push_back(tri(itr2->first, itr2->second.mode, iter->first));
-			    nonzeromodes.count++;
-			    //}
-		    }
-		}
-	    } // end of reading one class
+            for(itr2 = iter->second.begin(); itr2!=iter->second.end(); itr2++) {
+                if(itr2->second.mode!=0.0) {
+                    vector<int>::iterator viter2 = find(viter,words.end(),itr2->first);
+                    if(viter2!=words.end())
+                        viter=viter2;
+                    else {
+                        //if(iter->first==-1){
+                            nonzeromodes.nonzeros.push_back(tri(itr2->first, itr2->second.mode, iter->first));
+                            nonzeromodes.count++;
+                            //}
+                    }
+                }
+            } // end of reading one class
 
 
-	}
-
-	TIndPriorsMap::const_iterator itr2;
-	viter=words.begin();
-	for(itr2=m.begin();itr2!=m.end();itr2++){
-	    if(itr2->second.mode!=0.0) {
-		vector<int>::iterator viter2 = find(viter,words.end(),itr2->first);
-		// if the feature is active in training example, skip it;
-		if (viter2!=words.end())
-		    viter = viter2;
-		// otherwise, keep it
-		else {
-		    nonzeromodes.nonzeros.push_back(tri(itr2->first,itr2->second.mode,std::numeric_limits<int>::infinity()));
-		}
-	    }
         }
-   
+
+        TIndPriorsMap::const_iterator itr2;
+        viter=words.begin();
+        for(itr2=m.begin();itr2!=m.end();itr2++){
+            if(itr2->second.mode!=0.0) {
+                vector<int>::iterator viter2 = find(viter,words.end(),itr2->first);
+                // if the feature is active in training example, skip it;
+                if (viter2!=words.end())
+                    viter = viter2;
+                // otherwise, keep it
+                else {
+                    nonzeromodes.nonzeros.push_back(tri(itr2->first,itr2->second.mode,std::numeric_limits<int>::infinity()));
+                }
+            }
+        }
+
     }
 
 public:
@@ -123,35 +125,35 @@ public:
     TIndPriorsMode IndPriorsMode() const { return Active() ? m_indPriorsMode : indPriorsModeUndef; }
     //common
     bool HasIndPrior(unsigned iVar) const { return m.find(iVar)!=m.end(); }
-    double PriorMode(unsigned iVar) const { 
+    double PriorMode(unsigned iVar) const {
         std::map< unsigned, TModeVarSkew >::const_iterator itr = m.find(iVar);
         if(itr==m.end()) throw logic_error("Erroneous request for an individual prior");
         return itr->second.mode;
     }
-    double PriorVar(unsigned iVar) const { 
+    double PriorVar(unsigned iVar) const {
         std::map< unsigned, TModeVarSkew >::const_iterator itr = m.find(iVar);
         if(itr==m.end()) throw logic_error("Erroneous request for an individual prior");
         return itr->second.var;
     }
-    double PriorSkew(unsigned iVar) const { 
+    double PriorSkew(unsigned iVar) const {
         std::map< unsigned, TModeVarSkew >::const_iterator itr = m.find(iVar);
         if(itr==m.end()) throw logic_error("Erroneous request for an individual prior");
         return itr->second.skew;
     }
     //class-wise
-    bool HasClassIndPrior(int c, unsigned iVar) const { 
+    bool HasClassIndPrior(int c, unsigned iVar) const {
         return findByClass(c,iVar).var >= 0; }
     double ClassPriorMode(int c, unsigned iVar) const {
         TModeVarSkew p = findByClass(c,iVar);
         if( p.var<0 ) throw logic_error("Erroneous request for an individual prior");
         return p.mode;
     }
-    double ClassPriorVar(int c, unsigned iVar) const { 
+    double ClassPriorVar(int c, unsigned iVar) const {
         TModeVarSkew p = findByClass(c,iVar);
         if( p.var<0 ) throw logic_error("Erroneous request for an individual prior");
         return p.var;
     }
-    double ClassPriorSkew(int c, unsigned iVar) const { 
+    double ClassPriorSkew(int c, unsigned iVar) const {
         TModeVarSkew p = findByClass(c,iVar);
         if( p.var<0 ) throw logic_error("Erroneous request for an individual prior");
         return p.skew;
@@ -161,16 +163,16 @@ public:
 
     //SL v3.03
     /*
-    void checkNonZeroModes(vector<int>& words, vector<tri>& nonzeromodes) const { 
-	_getNonZeroModes(words,nonzeromodes);
+    void checkNonZeroModes(vector<int>& words, vector<tri>& nonzeromodes) const {
+        _getNonZeroModes(words,nonzeromodes);
     }
     */
 
-    void checkNonZeroModes(vector<int>& words, IndPriorNonZeroModeFeats& nonzeromodes) const { 
-	_getNonZeroModes(words,nonzeromodes);
+    void checkNonZeroModes(vector<int>& words, IndPriorNonZeroModeFeats& nonzeromodes) const {
+        _getNonZeroModes(words,nonzeromodes);
     }
 
-  
+
 };
 
 class PriorTermsByTopic {
@@ -196,7 +198,7 @@ public:
         m_multiTopic = true;
         m_indPriorsFile = ParamGetString( "indPriors.file","");
         std::string strPriorsMode = ParamGetString( "indPriors.mode","");
-        m_indPriorsMode = strPriorsMode=="abs" ? indPriorsModeAbs : 
+        m_indPriorsMode = strPriorsMode=="abs" ? indPriorsModeAbs :
                     strPriorsMode=="rel" ? indPriorsModeRel :
                     indPriorsModeUndef;
         if( m_indPriorsFile.size()>0 && m_indPriorsMode==indPriorsModeUndef )

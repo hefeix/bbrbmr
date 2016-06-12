@@ -18,7 +18,7 @@ using namespace std;
 
 #define TITLE "Bayesian Binary Regression ver "
 static const double ver = 2.0; // groups added
-/*static const double ver = 2.5; 
+/*static const double ver = 2.5;
  ver = 2.5:
     - easy for manual preparation
     - comments allowed, line starts with '#'
@@ -122,7 +122,7 @@ public:
                         break;
                     }
                 }
-                //if( !rowbuf.eof() ) //the only good reason to end the loop 
+                //if( !rowbuf.eof() ) //the only good reason to end the loop
                   //  throw runtime_error("Corrupt model file: '" KW_topicFeats "'");
             }
             else if( kw==KW_beta ) {
@@ -135,7 +135,7 @@ public:
                         break;
                     }
                 }
-                //if( !rowbuf.eof() ) //the only good reason to end the loop 
+                //if( !rowbuf.eof() ) //the only good reason to end the loop
                   //  throw runtime_error("Corrupt model file: 'beta'");
             }
             else if( kw==KW_betaHierSparse ) {
@@ -144,7 +144,7 @@ public:
                 double d; char smcln; unsigned g;
                 vector< pair<unsigned,double> >   sparseW;
                 char dbuf[100];
-                while( file>>buf ) { //!!! <var>:<val> does not allow spaces inside! 
+                while( file>>buf ) { //!!! <var>:<val> does not allow spaces inside!
                     istringstream rowbuf( buf );
                     if( rowbuf>>g>>smcln>>dbuf ) {
                         sscanf(dbuf,"%le",&d); //workaround for Microsoft bug: fails to read "...e-320"
@@ -155,7 +155,7 @@ public:
                         break;
                     }
                 }
-                //if( !rowbuf.eof() ) //the only good reason to end the loop 
+                //if( !rowbuf.eof() ) //the only good reason to end the loop
                     //throw runtime_error("Corrupt model file: sparse hierarchical beta");
                 wHier[feat] = sparseW;
             }
@@ -173,7 +173,7 @@ public:
             else if( kw==KW_design ) {
                 DesignType d;
                 file  >>(int&)d;
-                design = DesignParameter::DesignParameter( d );
+                design = DesignParameter(d);
             }
 
             //if( !rowbuf.good() && !rowbuf.eof() )
@@ -222,7 +222,7 @@ public:
                         break;
                     }
                 }
-                //if( !rowbuf.eof() ) //the only good reason to end the loop 
+                //if( !rowbuf.eof() ) //the only good reason to end the loop
                   //  throw runtime_error("Corrupt model file header: 'featRestrict'");
                 //should be already sorted! sort( featRestrict.begin(), featRestrict.end() );
             }
@@ -242,7 +242,7 @@ public:
                         break;
                     }
                 }
-                //if( !rowbuf.eof() ) //the only good reason to end the loop 
+                //if( !rowbuf.eof() ) //the only good reason to end the loop
                   //  throw runtime_error("Corrupt model file header: 'idf'");
             }
             else if( kw==KW_tfMethod ) {
@@ -267,7 +267,7 @@ public:
         Log(8)<<"\nModel file header read, Time "<<Log.time(); Log(8).flush();
     }
 };
-    
+
 class WriteModel {
     string filename;
     ofstream file;
@@ -275,135 +275,135 @@ class WriteModel {
     bool active;
 
 public:
-    void WriteTopic( const string& topic, 
-		     const string& modelname,
-		     const ModelType& modelType,
-		     const DesignParameter& design,
-		     const vector<int>& feats,
-		     const Vector& beta,
-		     double threshold,
-		     IRowSet& drs )
+    void WriteTopic( const string& topic,
+                     const string& modelname,
+                     const ModelType& modelType,
+                     const DesignParameter& design,
+                     const vector<int>& feats,
+                     const Vector& beta,
+                     double threshold,
+                     IRowSet& drs )
     {
         if(!active) return;         //--->>--
 
-	// [added by Shenzhi] for Task 2, task 3
-	/*
-	  a sample BBRtrain model file:
+        // [added by Shenzhi] for Task 2, task 3
+        /*
+          a sample BBRtrain model file:
 
-	  Bayesian Binary Regression ver 2
-	  tfMethod 0
-	  idfMethod 0
-	  cosineNormalize 0
-	  featRestrict 75 98 115   
-	  endofheader
-	  modelname MODELNAME // added in task 3
-	  topic <class>
-	  modelType 1 1 0 0
-	  design 0
-	  topicFeats 75 98 115
-	  beta 0.3 0.2 2.2 -11.0
-	  threshold 0.000000000000e+00
-	  endoftopic
+          Bayesian Binary Regression ver 2
+          tfMethod 0
+          idfMethod 0
+          cosineNormalize 0
+          featRestrict 75 98 115
+          endofheader
+          modelname MODELNAME // added in task 3
+          topic <class>
+          modelType 1 1 0 0
+          design 0
+          topicFeats 75 98 115
+          beta 0.3 0.2 2.2 -11.0
+          threshold 0.000000000000e+00
+          endoftopic
 
-	  Note1: the topicFeats should include 1. active features in training examples ;
-	  2. features not-active in training examples, but have non-zero modes in indprior file;
+          Note1: the topicFeats should include 1. active features in training examples ;
+          2. features not-active in training examples, but have non-zero modes in indprior file;
 
-	  Note2: For the features like Note1.(2), they do not need to participate in fitting. 
+          Note2: For the features like Note1.(2), they do not need to participate in fitting.
 
-	 */
+         */
 
-	// write out the featRestrict line; SL v3.03
-	// get the struct which keeps the non-zero mode feature info;
-	const IndPriorNonZeroModeFeats& nonzeroModes = drs.getNonzeroModes();
-	// get the number of features declared using coefficient-level (priority level 6 in defaults)
-	unsigned count = nonzeroModes.count;
-	// to record the unique non-zero mode features; one may appear in both level 6 (coefficient) and level 4 (feature)
-	map<int,double> mfeats;
+        // write out the featRestrict line; SL v3.03
+        // get the struct which keeps the non-zero mode feature info;
+        const IndPriorNonZeroModeFeats& nonzeroModes = drs.getNonzeroModes();
+        // get the number of features declared using coefficient-level (priority level 6 in defaults)
+        unsigned count = nonzeroModes.count;
+        // to record the unique non-zero mode features; one may appear in both level 6 (coefficient) and level 4 (feature)
+        map<int,double> mfeats;
 
-	for(unsigned i=0; i<nonzeroModes.nonzeros.size(); i++) {
-	    if(i<count && ( nonzeroModes.nonzeros.at(i).cls==-1 || nonzeroModes.nonzeros.at(i).cls==0) )
-		mfeats[nonzeroModes.nonzeros.at(i).feat] = nonzeroModes.nonzeros.at(i).val;
-	    else if( i>=count && mfeats.find(nonzeroModes.nonzeros.at(i).feat)==mfeats.end())
-		mfeats[nonzeroModes.nonzeros.at(i).feat] = nonzeroModes.nonzeros.at(i).val;
-	}
-	vector<int>* featrestrict = new vector<int>();
-	for(map<int,double>::iterator mitert=mfeats.begin();mitert!=mfeats.end();mitert++)
-	    featrestrict->push_back(mitert->first);
-	featrestrict->insert(featrestrict->end(), feats.begin(), feats.end());
-	sort(featrestrict->begin(),featrestrict->end());
-	WriteFeats(*featrestrict);
+        for(unsigned i=0; i<nonzeroModes.nonzeros.size(); i++) {
+            if(i<count && ( nonzeroModes.nonzeros.at(i).cls==-1 || nonzeroModes.nonzeros.at(i).cls==0) )
+                mfeats[nonzeroModes.nonzeros.at(i).feat] = nonzeroModes.nonzeros.at(i).val;
+            else if( i>=count && mfeats.find(nonzeroModes.nonzeros.at(i).feat)==mfeats.end())
+                mfeats[nonzeroModes.nonzeros.at(i).feat] = nonzeroModes.nonzeros.at(i).val;
+        }
+        vector<int>* featrestrict = new vector<int>();
+        for(map<int,double>::iterator mitert=mfeats.begin();mitert!=mfeats.end();mitert++)
+            featrestrict->push_back(mitert->first);
+        featrestrict->insert(featrestrict->end(), feats.begin(), feats.end());
+        sort(featrestrict->begin(),featrestrict->end());
+        WriteFeats(*featrestrict);
 
-	file<<KW_endofheader<<endl;
+        file<<KW_endofheader<<endl;
 
-	// for task 3
-	file<<KW_modelname<<" "<<modelname<<endl;
+        // for task 3
+        file<<KW_modelname<<" "<<modelname<<endl;
 
-	// write the "topic" line  
+        // write the "topic" line
         file<<KW_topic<<" "<<topic<<endl;
-	// write the "modelType" line
-        file<<KW_modelType 
+        // write the "modelType" line
+        file<<KW_modelType
             <<" "<<modelType.Link()
             <<" "<<modelType.Optimizer()
             <<" "<<modelType.TuneThreshold()
             <<" "<<modelType.Standardize()
             <<" "<<modelType.StringParam()
             <<endl;
-	// write "design" line
+        // write "design" line
         file<<KW_design<<" "<<design.DesignType()<<endl;
 
-	// write out the topicFeats and beta lines, only outputting the nonzeroes feats and betas
-	vector< pair<int,double> > sparseFeatureBeta;
-	// for each feature, if the corresponding beta is close enough to 0.0, discard it; otherwise, keep it;
-	map<int,double>::iterator miter = mfeats.begin();
-	for(unsigned i=0; i<feats.size(); i++) {
-	    // v3.03
-	    while(miter!=mfeats.end() && miter->first < feats.at(i)) {
-		sparseFeatureBeta.push_back(pair<int,double>(miter->first, miter->second));
-		miter++;
-	    }
-	    if(beta.at(i)!=0.0) // abandon the AlmostEqual strategy;  Shenzhi 12Mar07
-		sparseFeatureBeta.push_back(pair<int,double>(feats.at(i), beta.at(i)));
-	}
-	while(miter!=mfeats.end()) {
-	    sparseFeatureBeta.push_back(pair<int,double>(miter->first,miter->second));
-	    miter++;
-	}
-				       
+        // write out the topicFeats and beta lines, only outputting the nonzeroes feats and betas
+        vector< pair<int,double> > sparseFeatureBeta;
+        // for each feature, if the corresponding beta is close enough to 0.0, discard it; otherwise, keep it;
+        map<int,double>::iterator miter = mfeats.begin();
+        for(unsigned i=0; i<feats.size(); i++) {
+            // v3.03
+            while(miter!=mfeats.end() && miter->first < feats.at(i)) {
+                sparseFeatureBeta.push_back(pair<int,double>(miter->first, miter->second));
+                miter++;
+            }
+            if(beta.at(i)!=0.0) // abandon the AlmostEqual strategy;  Shenzhi 12Mar07
+                sparseFeatureBeta.push_back(pair<int,double>(feats.at(i), beta.at(i)));
+        }
+        while(miter!=mfeats.end()) {
+            sparseFeatureBeta.push_back(pair<int,double>(miter->first,miter->second));
+            miter++;
+        }
 
-	// write out the SPARSE topicFeats line
+
+        // write out the SPARSE topicFeats line
         file<<KW_topicFeats;
         for( unsigned i=0; i<sparseFeatureBeta.size(); i++ )
             file<<" "<<sparseFeatureBeta.at(i).first;
         file<<endl;
 
-	// write the SPARSE beta line 
+        // write the SPARSE beta line
         file<<KW_beta <<setiosflags(ios_base::scientific) <<setprecision(12);
-	for (unsigned i=0; i<sparseFeatureBeta.size(); i++)
-	    file<<" "<<sparseFeatureBeta.at(i).second;
-	// beta line should have one more @constant value than topicFeats line
+        for (unsigned i=0; i<sparseFeatureBeta.size(); i++)
+            file<<" "<<sparseFeatureBeta.at(i).second;
+        // beta line should have one more @constant value than topicFeats line
         file<<" "<<beta.at(beta.size()-1)<<endl;
 
-	// [end of adding]
+        // [end of adding]
 
         file<<KW_threshold <<setiosflags(ios_base::scientific)<<setprecision(12)<<" "<<threshold<<endl;
 
         EOTopic();
     }
 
-    void WriteTopicHierSparse( const string& topic, 
-			       const string& modelname,
-			       const ModelType& modelType,
-			       const DesignParameter& design,
-			       const vector<int>& feats,
-			       const vector< vector<double> >& beta,
-			       double threshold,
-			       IRowSet& drs )
+    void WriteTopicHierSparse( const string& topic,
+                               const string& modelname,
+                               const ModelType& modelType,
+                               const DesignParameter& design,
+                               const vector<int>& feats,
+                               const vector< vector<double> >& beta,
+                               double threshold,
+                               IRowSet& drs )
     {
         if(!active) return;         //--->>--
 
 
-	// commented by Shenzhi for task 2
-	/*
+        // commented by Shenzhi for task 2
+        /*
         WriteModelHeader( topic, modelType, design, feats );
 
         file<<setiosflags(ios_base::scientific) <<setprecision(12);
@@ -420,82 +420,82 @@ public:
                 file<<endl;
             }
         } //--feats--
-	*/
+        */
 
 
-	// write out the featRestrict line; SL v3.03
-	const IndPriorNonZeroModeFeats& nonzeroModes = drs.getNonzeroModes();
-	set<int> sfeats;
-	vector<int> vpos;
-	unsigned count = nonzeroModes.count;
-	for(unsigned i=1; i<nonzeroModes.nonzeros.size(); i++) {
-	    pair<set<int>::iterator, bool> retval;
-	    retval =  sfeats.insert(nonzeroModes.nonzeros.at(i).feat);
-	    if ( i<count || (i>=count && retval.second) )
-		vpos.push_back(i); 
-	}
-	vector<int>* featrestrict = new vector<int>();
-	for(set<int>::iterator siter=sfeats.begin();siter!=sfeats.end();siter++)
-	    featrestrict->push_back(*siter);
-	featrestrict->insert(featrestrict->end(), feats.begin(), feats.end());
-	sort(featrestrict->begin(),featrestrict->end());
-	WriteFeats(*featrestrict);
+        // write out the featRestrict line; SL v3.03
+        const IndPriorNonZeroModeFeats& nonzeroModes = drs.getNonzeroModes();
+        set<int> sfeats;
+        vector<int> vpos;
+        unsigned count = nonzeroModes.count;
+        for(unsigned i=1; i<nonzeroModes.nonzeros.size(); i++) {
+            pair<set<int>::iterator, bool> retval;
+            retval =  sfeats.insert(nonzeroModes.nonzeros.at(i).feat);
+            if ( i<count || (i>=count && retval.second) )
+                vpos.push_back(i);
+        }
+        vector<int>* featrestrict = new vector<int>();
+        for(set<int>::iterator siter=sfeats.begin();siter!=sfeats.end();siter++)
+            featrestrict->push_back(*siter);
+        featrestrict->insert(featrestrict->end(), feats.begin(), feats.end());
+        sort(featrestrict->begin(),featrestrict->end());
+        WriteFeats(*featrestrict);
 
 
-	file<<KW_endofheader<<endl;
+        file<<KW_endofheader<<endl;
 
-	// [added by shenzhi for task 2 & 3]
-	// for task 3
-	file<<KW_modelname<<" "<<modelname<<endl;
+        // [added by shenzhi for task 2 & 3]
+        // for task 3
+        file<<KW_modelname<<" "<<modelname<<endl;
 
-	// write the "topic" line  
+        // write the "topic" line
         file<<KW_topic<<" "<<topic<<endl;
-	// write the "modelType" line
-        file<<KW_modelType 
+        // write the "modelType" line
+        file<<KW_modelType
             <<" "<<modelType.Link()
             <<" "<<modelType.Optimizer()
             <<" "<<modelType.TuneThreshold()
             <<" "<<modelType.Standardize()
             <<" "<<modelType.StringParam()
             <<endl;
-	// write "design" line
+        // write "design" line
         file<<KW_design<<" "<<design.DesignType()<<endl;
 
 
         file<<setiosflags(ios_base::scientific) <<setprecision(12);
 
-	set<int> sparseFeats;
-	ostringstream betastr;
+        set<int> sparseFeats;
+        ostringstream betastr;
         for( unsigned j=0; j<beta.size(); j++ ) { //--feats--
             vector< pair<unsigned,double> > sparseBeta;
-	    bool sparsefeat = false;
-            for( unsigned g=0; g<beta.at(j).size(); g++ )  //build sparse for the feature 
+            bool sparsefeat = false;
+            for( unsigned g=0; g<beta.at(j).size(); g++ )  //build sparse for the feature
                 if( beta.at(j).at(g) != 0 ) {
                     sparseBeta.push_back( pair<unsigned,double>(g,beta.at(j).at(g)) );
-		    if(!sparsefeat && j!=beta.size()-1) {
-			sparseFeats.insert(feats.at(j));
-			sparsefeat = true;
-		    }
-		}
+                    if(!sparsefeat && j!=beta.size()-1) {
+                        sparseFeats.insert(feats.at(j));
+                        sparsefeat = true;
+                    }
+                }
             if( sparseBeta.size() > 0 ) {  //save all about the feature to file
                 betastr<<KW_betaHierSparse<<" "<<j;
                 for( unsigned gsp=0; gsp<sparseBeta.size(); gsp++ )
                     betastr<<" "<<sparseBeta.at(gsp).first<<":"<<sparseBeta.at(gsp).second;
                 betastr<<endl;
             }
-        } 
+        }
 
-	// write out the SPARSE topicFeats line
+        // write out the SPARSE topicFeats line
         file<<KW_topicFeats;
         for( set<int>::iterator siter=sparseFeats.begin(); siter!=sparseFeats.end(); siter++)
             file<<" "<<*siter;
-	for(unsigned i=0; i<vpos.size(); i++)
-	    file<<" "<<nonzeroModes.nonzeros.at(vpos.at(i)).feat;
+        for(unsigned i=0; i<vpos.size(); i++)
+            file<<" "<<nonzeroModes.nonzeros.at(vpos.at(i)).feat;
         file<<endl;
 
-	file<<betastr;
+        file<<betastr;
 
-	// [end of adding]
+        // [end of adding]
 
         file<<KW_threshold <<setiosflags(ios_base::scientific)<<setprecision(12)<<" "<<threshold<<endl;
 
@@ -528,7 +528,7 @@ public:
 private:
 
 
-    void WriteModelHeader( const string& topic, 
+    void WriteModelHeader( const string& topic,
         const ModelType& modelType,
         const DesignParameter& design,
         const vector<int>& feats )
@@ -536,7 +536,7 @@ private:
         if(!active) return;         //--->>--
 
         file<<KW_topic<<" "<<topic<<endl;
-        file<<KW_modelType 
+        file<<KW_modelType
             <<" "<<modelType.Link()
             <<" "<<modelType.Optimizer()
             <<" "<<modelType.TuneThreshold()
